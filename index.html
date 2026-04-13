@@ -2,8 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kazim Khan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#070709">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Here's Kazim</title>
+<!-- SVG Favicon: "K." lettermark in Bebas style, red accent dot -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23070709'/%3E%3Ctext x='3' y='24' font-family='Georgia,serif' font-weight='700' font-size='22' fill='%23ffffff' letter-spacing='-1'%3EK%3C/text%3E%3Ccircle cx='26' cy='22' r='3.5' fill='%23ff3c2e'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%23070709'/%3E%3Ctext x='14' y='138' font-family='Georgia,serif' font-weight='700' font-size='130' fill='%23ffffff'%3EK%3C/text%3E%3Ccircle cx='154' cy='130' r='22' fill='%23ff3c2e'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
@@ -501,23 +507,197 @@
   }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
-  /* Mobile */
+  /* ── HAMBURGER BUTTON ── */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column; justify-content: center; align-items: center;
+    width: 44px; height: 44px; gap: 5px;
+    background: none; border: none; cursor: pointer; padding: 0;
+    z-index: 201;
+  }
+  .nav-hamburger span {
+    display: block; width: 24px; height: 2px;
+    background: var(--white);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* ── MOBILE DRAWER ── */
+  .nav-drawer {
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: min(80vw, 320px);
+    background: rgba(7,7,9,0.97);
+    backdrop-filter: blur(24px);
+    border-left: 1px solid var(--border);
+    z-index: 200;
+    display: flex; flex-direction: column;
+    padding: 6rem 2.5rem 3rem;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    visibility: hidden;
+  }
+  .nav-drawer.open {
+    transform: translateX(0);
+    visibility: visible;
+  }
+  .nav-drawer-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 199;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease;
+    backdrop-filter: blur(2px);
+  }
+  .nav-drawer-overlay.open { opacity: 1; pointer-events: all; }
+  .nav-drawer ul {
+    list-style: none; display: flex; flex-direction: column; gap: 0;
+  }
+  .nav-drawer ul li a {
+    display: block; padding: 1.1rem 0;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem; letter-spacing: 0.05em;
+    color: var(--muted); text-decoration: none;
+    transition: color 0.2s, padding-left 0.2s;
+  }
+  .nav-drawer ul li a:active,
+  .nav-drawer ul li a:focus { color: var(--white); padding-left: 0.5rem; outline: none; }
+  .nav-drawer-gh {
+    margin-top: auto;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+    letter-spacing: 0.12em; color: var(--accent); text-decoration: none;
+    border: 1px solid var(--accent); padding: 0.8rem 1.2rem;
+    text-align: center; transition: all 0.2s;
+    display: block;
+  }
+  .nav-drawer-gh:active { background: var(--accent); color: var(--bg); }
+
+  /* ── BOTTOM MOBILE NAV BAR ── */
+  .mobile-bottom-nav {
+    display: none;
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 150;
+    background: rgba(7,7,9,0.92);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    padding: 0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom));
+    flex-direction: row; justify-content: space-around; align-items: center;
+  }
+  .mobile-bottom-nav a {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    text-decoration: none; color: var(--muted);
+    padding: 0.4rem 0.6rem;
+    transition: color 0.2s; min-width: 48px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mobile-bottom-nav a.active,
+  .mobile-bottom-nav a:focus { color: var(--accent); outline: none; }
+  .mobile-bottom-nav .mbn-icon { font-size: 1.1rem; line-height: 1; }
+  .mobile-bottom-nav .mbn-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+
+  /* ── MOBILE MEDIA QUERIES ── */
   @media (max-width: 900px) {
-    nav { padding: 1rem 1.5rem; }
-    .nav-links { display: none; }
-    #hero { padding: 7rem 1.5rem 4rem; }
-    .hero-stats { position: static; flex-direction: row; flex-wrap: wrap; margin-top: 3rem; gap: 2rem; }
-    section { padding: 5rem 1.5rem; }
-    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
-    .about-visual { display: none; }
-    .tools-grid { grid-template-columns: 1fr; }
-    .games-grid { grid-template-columns: 1fr; }
-    .projects-masonry { grid-template-columns: 1fr; }
-    .project-card.wide { grid-column: span 1; }
-    .skills-layout { grid-template-columns: 1fr; gap: 2rem; }
-    .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
-    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    /* Nav */
+    nav { padding: 0.9rem 1.4rem; }
+    .nav-links, .nav-gh { display: none; }
+    .nav-hamburger { display: flex; }
+    .mobile-bottom-nav { display: flex; }
+
+    /* Cursor off on touch */
+    .cursor, .cursor-ring { display: none; }
+    body { cursor: auto; }
+
+    /* Hero */
+    #hero {
+      padding: 6rem 1.4rem 7rem;
+      min-height: 100svh;
+      align-items: flex-start;
+    }
+    .hero-name { font-size: clamp(4rem, 18vw, 7rem); line-height: 0.88; }
+    .hero-sub { font-size: 1rem; }
+    .hero-ctas { flex-direction: column; gap: 0.75rem; width: 100%; }
+    .btn-primary, .btn-ghost {
+      width: 100%; text-align: center; padding: 1rem;
+      font-size: 0.8rem;
+    }
+    .hero-stats {
+      position: static;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1rem; margin-top: 2.5rem; width: 100%;
+    }
+    .stat-item { text-align: left; }
+    .stat-num { font-size: 2rem; }
     .scroll-hint { display: none; }
+
+    /* Sections */
+    section { padding: 4rem 1.4rem 5rem; }
+    .section-title { font-size: clamp(2.4rem, 10vw, 4rem); margin-bottom: 2.5rem; }
+
+    /* About */
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .about-visual { display: none; }
+    .about-text p { font-size: 1.05rem; }
+
+    /* OpenSlate tools */
+    .tools-grid { grid-template-columns: 1fr; gap: 2px; }
+    .tool-card { padding: 2rem 1.4rem; }
+
+    /* Games */
+    .games-grid { grid-template-columns: 1fr; gap: 2px; }
+    .game-card { padding: 2rem 1.4rem; min-height: 240px; }
+    .game-card::after { font-size: 5rem; }
+
+    /* Projects */
+    .projects-masonry { grid-template-columns: 1fr; gap: 2px; }
+    .project-card { padding: 2rem 1.4rem; }
+    .project-card.wide { grid-column: span 1; }
+    .project-card.wide > div { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+
+    /* Skills */
+    .skills-layout { grid-template-columns: 1fr; gap: 2rem; }
+    .skill-pill { padding: 0.6rem 0.8rem; font-size: 0.7rem; }
+
+    /* Contact */
+    .contact-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    .contact-heading { font-size: clamp(2.8rem, 12vw, 5rem); }
+    .contact-link { padding: 1.2rem 0; font-size: 1rem; min-height: 56px; }
+
+    /* Footer — add bottom padding for nav bar */
+    footer {
+      flex-direction: column; gap: 0.5rem; text-align: center;
+      padding-bottom: calc(1.5rem + 60px + env(safe-area-inset-bottom));
+    }
+
+    /* Safe area bottom padding for last section */
+    #contact { padding-bottom: calc(5rem + 60px + env(safe-area-inset-bottom)); }
+  }
+
+  /* Extra small phones */
+  @media (max-width: 380px) {
+    .hero-name { font-size: 3.6rem; }
+    .hero-stats { grid-template-columns: 1fr 1fr; }
+    .stat-num { font-size: 1.7rem; }
+    .btn-primary, .btn-ghost { font-size: 0.7rem; }
+  }
+
+  /* Tablet tweaks */
+  @media (min-width: 601px) and (max-width: 900px) {
+    .tools-grid { grid-template-columns: 1fr 1fr; }
+    .games-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* Touch: remove hover-only effects that feel sticky */
+  @media (hover: none) {
+    .tool-card:hover { background: rgba(7,7,9,0.75); }
+    .game-card:hover { background: rgba(13,13,18,0.75); }
+    .project-card:hover { background: rgba(7,7,9,0.75); }
+    .contact-link:hover { padding-left: 0; }
+    .tool-link:hover { gap: 0.5rem; }
   }
 </style>
 </head>
@@ -528,19 +708,62 @@
 <div class="cursor" id="cur"></div>
 <div class="cursor-ring" id="curR"></div>
 
-<!-- NAV -->
+<!-- MOBILE DRAWER OVERLAY -->
+<div class="nav-drawer-overlay" id="drawerOverlay"></div>
+
+<!-- MOBILE DRAWER -->
+<nav class="nav-drawer" id="navDrawer">
+  <ul>
+    <li><a href="#about" class="drawer-link">About</a></li>
+    <li><a href="#openslate" class="drawer-link">OpenSlate</a></li>
+    <li><a href="#projects" class="drawer-link">Labs</a></li>
+    <li><a href="#games" class="drawer-link">Games</a></li>
+    <li><a href="#skills" class="drawer-link">Skills</a></li>
+    <li><a href="#contact" class="drawer-link">Contact</a></li>
+  </ul>
+  <a href="https://github.com/kazim-45" target="_blank" class="nav-drawer-gh">GitHub ↗</a>
+</nav>
+
+<!-- TOP NAV -->
 <nav>
   <a href="#hero" class="nav-logo">K<span>.</span></a>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#openslate">OpenSlate</a></li>
+    <li><a href="#projects">Labs</a></li>
     <li><a href="#games">Games</a></li>
-    <li><a href="#projects">Projects</a></li>
     <li><a href="#skills">Skills</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
   <a href="https://github.com/kazim-45" target="_blank" class="nav-gh">GitHub ↗</a>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MOBILE BOTTOM NAV -->
+<div class="mobile-bottom-nav" id="mobileBottomNav">
+  <a href="#hero" class="mbn-item active" data-section="hero">
+    <span class="mbn-icon">⌂</span>
+    <span class="mbn-label">Home</span>
+  </a>
+  <a href="#openslate" class="mbn-item" data-section="openslate">
+    <span class="mbn-icon">🎬</span>
+    <span class="mbn-label">Slate</span>
+  </a>
+  <a href="#projects" class="mbn-item" data-section="projects">
+    <span class="mbn-icon">⚡</span>
+    <span class="mbn-label">Labs</span>
+  </a>
+  <a href="#games" class="mbn-item" data-section="games">
+    <span class="mbn-icon">🎮</span>
+    <span class="mbn-label">Games</span>
+  </a>
+  <a href="#contact" class="mbn-item" data-section="contact">
+    <span class="mbn-icon">✉</span>
+    <span class="mbn-label">Contact</span>
+  </a>
+</div>
 
 <!-- HERO -->
 <section id="hero">
@@ -682,41 +905,9 @@
   </div>
 </section>
 
-<!-- GAMES -->
-<section id="games">
-  <div class="section-num">03 · Games</div>
-  <h2 class="section-title">BROWSER<br>GAMES</h2>
-  <div class="games-grid reveal">
-    <div class="game-card" data-title="DEADZONE">
-      <div class="game-type">Browser Game · 3D FPS</div>
-      <div class="game-name">DEAD ZONE</div>
-      <p class="game-desc">Full 3D zombie shooter in the browser — no engine. Three.js r128: zombie AI, dynamic lighting, weapon systems, collision. Full mobile support with floating joystick. Single HTML file.</p>
-      <div class="game-tags">
-        <span class="game-tag">Three.js r128</span>
-        <span class="game-tag">WebGL</span>
-        <span class="game-tag">Vanilla JS</span>
-        <span class="game-tag">Mobile Touch</span>
-      </div>
-      <a href="https://github.com/kazim-45/dead-zone" target="_blank" class="game-link">GitHub →</a>
-    </div>
-    <div class="game-card" data-title="TEMPLE">
-      <div class="game-type">Browser Game · Endless Runner</div>
-      <div class="game-name">TEMPLE DASH</div>
-      <p class="game-desc">Fast endless runner through procedurally generated temples. Smooth obstacle mechanics, score system, speed-scaling difficulty, mobile-first input. Built for the thrill of one more run.</p>
-      <div class="game-tags">
-        <span class="game-tag">Vanilla JS</span>
-        <span class="game-tag">Procedural Gen</span>
-        <span class="game-tag">Canvas API</span>
-        <span class="game-tag">Mobile</span>
-      </div>
-      <a href="https://github.com/kazim-45/Temple-dash" target="_blank" class="game-link">GitHub →</a>
-    </div>
-  </div>
-</section>
-
-<!-- NEW PROJECTS -->
+<!-- LABS & EXPERIMENTS (formerly 04, now 03) -->
 <section id="projects">
-  <div class="section-num">04 · Projects</div>
+  <div class="section-num">03 · Projects</div>
   <h2 class="section-title">LABS &<br>EXPERIMENTS</h2>
   <div class="projects-masonry reveal">
 
@@ -773,6 +964,38 @@
       </div>
     </div>
 
+  </div>
+</section>
+
+<!-- GAMES (formerly 03, now 04) -->
+<section id="games">
+  <div class="section-num">04 · Games</div>
+  <h2 class="section-title">BROWSER<br>GAMES</h2>
+  <div class="games-grid reveal">
+    <div class="game-card" data-title="DEADZONE">
+      <div class="game-type">Browser Game · 3D FPS</div>
+      <div class="game-name">DEAD ZONE</div>
+      <p class="game-desc">Full 3D zombie shooter in the browser — no engine. Three.js r128: zombie AI, dynamic lighting, weapon systems, collision. Full mobile support with floating joystick. Single HTML file.</p>
+      <div class="game-tags">
+        <span class="game-tag">Three.js r128</span>
+        <span class="game-tag">WebGL</span>
+        <span class="game-tag">Vanilla JS</span>
+        <span class="game-tag">Mobile Touch</span>
+      </div>
+      <a href="https://github.com/kazim-45/dead-zone" target="_blank" class="game-link">GitHub →</a>
+    </div>
+    <div class="game-card" data-title="TEMPLE">
+      <div class="game-type">Browser Game · Endless Runner</div>
+      <div class="game-name">TEMPLE DASH</div>
+      <p class="game-desc">Fast endless runner through procedurally generated temples. Smooth obstacle mechanics, score system, speed-scaling difficulty, mobile-first input. Built for the thrill of one more run.</p>
+      <div class="game-tags">
+        <span class="game-tag">Vanilla JS</span>
+        <span class="game-tag">Procedural Gen</span>
+        <span class="game-tag">Canvas API</span>
+        <span class="game-tag">Mobile</span>
+      </div>
+      <a href="https://github.com/kazim-45/Temple-dash" target="_blank" class="game-link">GitHub →</a>
+    </div>
   </div>
 </section>
 
@@ -859,7 +1082,7 @@
         </div>
         <span class="contact-arrow">↗</span>
       </a>
-      <a href="muhammadkazim387@gmail.com" class="contact-link">
+      <a href="mailto:muhammadkazim387@gmail.com" class="contact-link">
         <div>
           <div class="contact-link-label">Direct</div>
           <div>Email</div>
@@ -897,24 +1120,66 @@
   <span>Lahore, Pakistan · github.com/kazim-45</span>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-  // Cursor
+<script>
+  // ── CURSOR (desktop only) ──
   const cur = document.getElementById('cur');
   const curR = document.getElementById('curR');
-  let mx = 0, my = 0;
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cur.style.left = mx + 'px'; cur.style.top = my + 'px';
-    curR.style.left = mx + 'px'; curR.style.top = my + 'px';
+  const isTouchDevice = window.matchMedia('(hover: none)').matches;
+  if (!isTouchDevice && cur) {
+    let mx = 0, my = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cur.style.left = mx + 'px'; cur.style.top = my + 'px';
+      curR.style.left = mx + 'px'; curR.style.top = my + 'px';
+    });
+  }
+
+  // ── HAMBURGER MENU ──
+  const hamburger = document.getElementById('hamburger');
+  const navDrawer = document.getElementById('navDrawer');
+  const drawerOverlay = document.getElementById('drawerOverlay');
+
+  function openDrawer() {
+    hamburger.classList.add('open');
+    navDrawer.classList.add('open');
+    drawerOverlay.classList.add('open');
+    hamburger.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer() {
+    hamburger.classList.remove('open');
+    navDrawer.classList.remove('open');
+    drawerOverlay.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  hamburger.addEventListener('click', () => {
+    navDrawer.classList.contains('open') ? closeDrawer() : openDrawer();
+  });
+  drawerOverlay.addEventListener('click', closeDrawer);
+
+  // Close drawer on link tap
+  document.querySelectorAll('.drawer-link').forEach(link => {
+    link.addEventListener('click', () => {
+      setTimeout(closeDrawer, 150);
+    });
   });
 
-  // Reveal on scroll
+  // Swipe right to close drawer
+  let touchStartX = 0;
+  navDrawer.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  navDrawer.addEventListener('touchend', e => {
+    if (e.changedTouches[0].clientX - touchStartX > 60) closeDrawer();
+  }, { passive: true });
+
+  // ── SCROLL REVEAL ──
   const reveals = document.querySelectorAll('.reveal');
   const obs = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) { e.target.classList.add('visible'); }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
   reveals.forEach(r => obs.observe(r));
 
   // Stagger children in grids
@@ -926,6 +1191,31 @@
       obs.observe(child);
     });
     grid.classList.remove('reveal');
+  });
+
+  // ── BOTTOM NAV ACTIVE STATE ──
+  const mbnItems = document.querySelectorAll('.mbn-item');
+  const sections = ['hero','openslate','projects','games','contact'];
+  const sectionEls = sections.map(id => document.getElementById(id)).filter(Boolean);
+
+  function updateBottomNav() {
+    let current = 'hero';
+    const scrollY = window.scrollY + window.innerHeight * 0.4;
+    sectionEls.forEach(el => {
+      if (el.offsetTop <= scrollY) current = el.id;
+    });
+    mbnItems.forEach(item => {
+      item.classList.toggle('active', item.dataset.section === current);
+    });
+  }
+  window.addEventListener('scroll', updateBottomNav, { passive: true });
+  updateBottomNav();
+
+  // ── TOUCH FEEDBACK on cards ──
+  document.querySelectorAll('.tool-card, .game-card, .project-card, .contact-link').forEach(el => {
+    el.addEventListener('touchstart', () => el.style.opacity = '0.8', { passive: true });
+    el.addEventListener('touchend', () => el.style.opacity = '', { passive: true });
+    el.addEventListener('touchcancel', () => el.style.opacity = '', { passive: true });
   });
 </script>
 
